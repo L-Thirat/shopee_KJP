@@ -24,10 +24,11 @@ if True:
 train_ner_filename = "train_ner.json"
 val_ner_filename = "val_ner.json"
 
-outlog_file = 'output_log.txt'
-output_file = 'test_output.txt'
-train_file = 'train_output.txt'
-outlog_txt = 'outputlog.txt'
+output_dir = "../drive/MyDrive/"
+outlog_file = output_dir + 'output_log.txt'
+output_file = output_dir + 'test_output.txt'
+train_file = output_dir + 'train_output.txt'
+outlog_txt = output_dir + 'outputlog.txt'
 
 # TRAIN_DATA = [('what is the price of polo?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of ball?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of jegging?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of t-shirt?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of jeans?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of bat?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of shirt?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of bag?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of cup?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of jug?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of plate?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of glass?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of moniter?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of desktop?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of bottle?', {'entities': [(21, 27, 'PrdName')]}), ('what is the price of mouse?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of keyboad?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of chair?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of table?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of watch?', {'entities': [(21, 26, 'PrdName')]})]
 with open(train_ner_filename, "r", encoding='utf-8') as json_file:
@@ -107,7 +108,7 @@ def train_spacy(data, iterations):
 
             start = time.time()  # Iteration Time
 
-            if itn % 50 == 0:
+            if itn % 50 == 0 and itn != 0:
                 print("Itn  : " + str(itn), time.time() - start_training_time)
                 print('Testing')
 
@@ -128,9 +129,9 @@ def train_spacy(data, iterations):
                 # nlp.to_disk(modelfile)
 
             # Reducing Learning rate after certain operations
-            if itn == 70:
+            if itn == 60:
                 optimizer.learn_rate = 0.0005
-            if itn == 85:
+            if itn == 70:
                 optimizer.learn_rate = 0.0001
 
             print("Statring iteration " + str(itn))
@@ -177,13 +178,13 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 100)
+prdnlp = train_spacy(TRAIN_DATA, 80)
 
 # Save our trained Model
 
 # uncomment if you want to put model name through command line
 # modelfile = input("Enter your Model Name: ")
-modelfile = "Final_model"
+modelfile = output_dir + "Final_model"
 prdnlp.to_disk(modelfile)
 
 # Test your text
@@ -197,3 +198,7 @@ results = evaluate(prdnlp, TEST_DATA)
 import json
 
 print(json.dumps(results, indent=4))
+output_dir = "../drive/MyDrive/"
+result_filename = output_dir + 'result.json'
+with open(result_filename, 'w') as outfile:
+    json.dump(results, outfile)
