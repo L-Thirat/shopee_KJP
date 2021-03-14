@@ -108,7 +108,7 @@ def train_spacy(data, iterations):
 
             start = time.time()  # Iteration Time
 
-            if itn % 50 == 0 and itn != 0:
+            if itn % 100 == 0 and itn != 0:
                 print("Itn  : " + str(itn), time.time() - start_training_time)
                 print('Testing')
 
