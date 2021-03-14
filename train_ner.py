@@ -10,9 +10,10 @@ from spacy.scorer import Scorer
 
 
 # Settings for google Collab
-# spacy.require_gpu()
-# gpu = spacy.prefer_gpu()
-# print('GPU:', gpu)
+if True:
+    spacy.require_gpu()
+    gpu = spacy.prefer_gpu()
+    print('GPU:', gpu)
 
 
 # Downloading models
@@ -68,8 +69,6 @@ def train_spacy(data, iterations):
     if 'ner' not in nlp.pipe_names:
         ner = nlp.create_pipe('ner')
         nlp.add_pipe(ner, last=True)
-        # ner = nlp.add_pipe("ner")
-
     else:
         ner = nlp.get_pipe("ner")
 
@@ -80,14 +79,11 @@ def train_spacy(data, iterations):
 
     if model is None:
         optimizer = nlp.begin_training()
-
         # For training with customized cfg
-        nlp.entity.cfg['conv_depth'] = 16
-        nlp.entity.cfg['token_vector_width'] = 256
+        # nlp.entity.cfg['conv_depth'] = 16
+        # nlp.entity.cfg['token_vector_width'] = 256
         # nlp.entity.cfg['bilstm_depth'] = 1
         # nlp.entity.cfg['beam_width'] = 2
-
-
     else:
         print("resuming")
         optimizer = nlp.resume_training()
@@ -97,8 +93,10 @@ def train_spacy(data, iterations):
     pipe_exceptions = ["ner", "trf_wordpiecer", "trf_tok2vec"]
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
 
+    # dropout = decaying(0.8, 0.2, 1e-6)  # minimum, max, decay rate
     dropout = decaying(0.8, 0.2, 1e-6)  # minimum, max, decay rate
-    sizes = compounding(1.0, 4.0, 1.001)
+    # sizes = compounding(1.0, 4.0, 1.001)
+    sizes = compounding(4., 32., 1.001)
 
     with nlp.disable_pipes(*other_pipes):  # only train NER
 
@@ -129,7 +127,7 @@ def train_spacy(data, iterations):
                 modelfile = "training_model" + str(itn)
                 nlp.to_disk(modelfile)
 
-            # Reducing Learning rate after certain operations 
+            # Reducing Learning rate after certain operations
             if itn == 150:
                 optimizer.learn_rate = 0.0001
 
@@ -143,20 +141,20 @@ def train_spacy(data, iterations):
             batches = minibatch(TRAIN_DATA, size=sizes)
             for batch in batches:
                 texts, annotations = zip(*batch)
-                nlp.update(texts, annotations, sgd=optimizer, drop=next(dropout), losses=losses)
+                # nlp.update(texts, annotations, sgd=optimizer, drop=next(dropout), losses=losses)
+                nlp.update(texts, annotations, sgd=optimizer, drop=0.35, losses=losses)
 
             ###########################################
 
             ##### For training in as a single iteration
-
             # for text, annotations in TRAIN_DATA:
             #     nlp.update(
             #         [text],  # batch of texts
             #         [annotations],  # batch of annotations
             #         drop=0.2,  # dropout - make it harder to memorise data
-            #         # drop=next(dropout),  Incase you are using decaying drop
-            #         sgd=optimizer,  # callable to update weights
-            #         losses=losses)
+                    # # drop=next(dropout),  Incase you are using decaying drop
+                    # sgd=optimizer,  # callable to update weights
+                    # losses=losses)
 
             print("Losses", losses)
             file.write(str(itn) + "," + str(losses['ner']) + "\n")
@@ -177,7 +175,7 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 200)
+prdnlp = train_spacy(TRAIN_DATA, 5)
 
 # Save our trained Model
 

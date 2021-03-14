@@ -34,6 +34,7 @@ df["start2_street"] = find(b, a) + 1
 a = df.street.values.astype(str)
 df["cur_start_street"] = find(b, a) #+ 1
 
+
 # kembangan utara b,
 df.loc[df['start_street'] == 0, 'start_street'] = df["start2_street"]
 df.loc[df['start_street'] == 0, 'start_street'] = df["cur_start_street"]
@@ -44,15 +45,34 @@ df.loc[df['start_street'] == 0, 'start_street'] = df["cur_start_street"]
 # df["start_street"] = df['start_street'].where(df['mock_start_street'] == -1, df['start_street'])
 
 df["end_street"] = df["start_street"] + df["street"].str.len()
+
+# todo word tokenize
+# STREET_NAMES = list(set(df["street"]))
+# print(STREET_NAMES)
+# df.loc[df['start_street'] == 0, 'start_street'] = df["raw_address"].str.split(r"\+|=", expand=True)
+
 # print(df)
 # asd
 ner_def = []
 for index, row in df.iterrows():
     if row["street"] and row['start_street'] != -1:
+        start = row['start_street']
+        end = row['end_street']
+
+        # todo rule-based -> ? (testing)
+        raw_address = row['raw_address']
+        if row['end_street'] < (len(raw_address)):
+            if raw_address[row['end_street']] != " ":
+                raw_address = raw_address[:row['end_street']] + " " + raw_address[row['end_street']:]
+        if row['start_street'] > 0:
+            if raw_address[row['start_street']-1] != " ":
+                raw_address = raw_address[:row['start_street']] + " " + raw_address[row['start_street']:]
+                start += 1
+                end += 1
         ner = {
-            "entities": [(row['start_street'], row['end_street'], "StreetName")]
+            "entities": [(start, end, "LOCATION")]
         }
-        ner_def.append((row['raw_address'], ner))
+        ner_def.append((raw_address, ner))
 
 train_val_per = int(len(ner_def) * 0.15)
 
