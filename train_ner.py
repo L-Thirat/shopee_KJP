@@ -127,6 +127,8 @@ def train_spacy(data, iterations):
                 nlp.to_disk(modelfile)
 
             # Reducing Learning rate after certain operations
+            if itn == 100:
+                optimizer.learn_rate = 0.0005
             if itn == 150:
                 optimizer.learn_rate = 0.0001
 
@@ -174,7 +176,7 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 5)
+prdnlp = train_spacy(TRAIN_DATA, 150)
 
 # Save our trained Model
 
