@@ -23,6 +23,11 @@ from spacy.scorer import Scorer
 train_ner_filename = "train_ner.json"
 val_ner_filename = "val_ner.json"
 
+outlog_file = 'output_log.txt'
+output_file = 'test_output.txt'
+train_file = 'train_output.txt'
+outlog_txt = 'outputlog.txt'
+
 # TRAIN_DATA = [('what is the price of polo?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of ball?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of jegging?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of t-shirt?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of jeans?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of bat?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of shirt?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of bag?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of cup?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of jug?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of plate?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of glass?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of moniter?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of desktop?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of bottle?', {'entities': [(21, 27, 'PrdName')]}), ('what is the price of mouse?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of keyboad?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of chair?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of table?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of watch?', {'entities': [(21, 26, 'PrdName')]})]
 with open(train_ner_filename, "r", encoding='utf-8') as json_file:
     TRAIN_DATA = json.load(json_file)
@@ -35,13 +40,13 @@ with open(val_ner_filename, "r", encoding='utf-8') as json_file:
 random.seed(0)
 
 # Log files for logging the train and testing scores for references
-file = open('output_log.txt', 'w')
+file = open(outlog_file, 'w')
 file.write("iteration_no" + "," + "losses" + "\n")
 
-file1 = open('test_output.txt', 'w')
+file1 = open(output_file, 'w')
 file1.write("iteration_no" + "," + "ents_p" + "," + "ents_r" + "," + "ents_f" + "," + "ents_per_type" + "\n")
 
-file2 = open('train_output.txt', 'w')
+file2 = open(train_file, 'w')
 file2.write("iteration_no" + "," + "ents_p" + "," + "ents_r" + "," + "ents_f" + "," + "ents_per_type" + "\n")
 
 model = None  # ("en_core_web_sm")   # Replace with model you want to train
@@ -101,22 +106,22 @@ def train_spacy(data, iterations):
 
         for itn in range(iterations):
 
-            file = open('outputlog.txt', 'a')  # For logging losses of iterations
+            file = open(outlog_txt, 'a')  # For logging losses of iterations
 
             start = time.time()  # Iteration Time
 
-            if (itn % 100 == 0):
+            if itn % 100 == 0:
                 print("Itn  : " + str(itn), time.time() - start_training_time)
                 print('Testing')
 
                 results = evaluate(nlp, TEST_DATA)
-                file1 = open('test_output.txt', 'a')
+                file1 = open(outlog_file, 'a')
                 file1.write(str(itn) + ',' + str(results['ents_p']) + ',' + str(results['ents_r']) + ',' + str(
                     results['ents_f']) + ',' + str(results["ents_per_type"]) + "\n")
                 file1.close()
 
                 results = evaluate(nlp, TRAIN_DATA)
-                file2 = open('train_output.txt', 'a')
+                file2 = open(train_file, 'a')
                 file2.write(str(itn) + ',' + str(results['ents_p']) + ',' + str(results['ents_r']) + ',' + str(
                     results['ents_f']) + ',' + str(results["ents_per_type"]) + "\n")
                 file2.close()
@@ -125,7 +130,7 @@ def train_spacy(data, iterations):
                 nlp.to_disk(modelfile)
 
             # Reducing Learning rate after certain operations 
-            if (itn == 300):
+            if itn == 150:
                 optimizer.learn_rate = 0.0001
 
             print("Statring iteration " + str(itn))
@@ -172,7 +177,7 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 500)
+prdnlp = train_spacy(TRAIN_DATA, 200)
 
 # Save our trained Model
 

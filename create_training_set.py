@@ -27,11 +27,18 @@ a = df.mock_street.values.astype(str)
 b = df.raw_address.values.astype(str)
 df["start_street"] = find(b, a) + 1
 
+df["mock2_street"] = " " + df["street"] + ","
+a = df.mock2_street.values.astype(str)
+df["start2_street"] = find(b, a) + 1
+
 a = df.street.values.astype(str)
-df["cur_start_street"] = find(b, a) + 1
+df["cur_start_street"] = find(b, a) #+ 1
 
 # kembangan utara b,
-df[df['start_street'] == -1]["start_street"] = df["cur_start_street"]
+df.loc[df['start_street'] == 0, 'start_street'] = df["start2_street"]
+df.loc[df['start_street'] == 0, 'start_street'] = df["cur_start_street"]
+# df[df['start_street'] == 0]["start_street"] = df["cur_start_street"]
+
 # df.loc[df['mock_start_street'] == -1, 'start_street'] = df["cur_start_street"]
 # df.loc[df['Country']=='USA','z'] = foo['x']
 # df["start_street"] = df['start_street'].where(df['mock_start_street'] == -1, df['start_street'])
