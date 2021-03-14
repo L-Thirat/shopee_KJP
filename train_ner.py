@@ -93,7 +93,6 @@ def train_spacy(data, iterations):
     pipe_exceptions = ["ner", "trf_wordpiecer", "trf_tok2vec"]
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
 
-    # dropout = decaying(0.8, 0.2, 1e-6)  # minimum, max, decay rate
     dropout = decaying(0.8, 0.2, 1e-6)  # minimum, max, decay rate
     # sizes = compounding(1.0, 4.0, 1.001)
     sizes = compounding(4., 32., 1.001)
@@ -108,7 +107,7 @@ def train_spacy(data, iterations):
 
             start = time.time()  # Iteration Time
 
-            if itn % 100 == 0:
+            if itn % 100 == 0 and itn != 0:
                 print("Itn  : " + str(itn), time.time() - start_training_time)
                 print('Testing')
 
