@@ -11,6 +11,8 @@ val_ner_filename = "val_ner.json"
 pd.set_option('display.max_columns', 20)
 
 cols = ["raw_address", "POI/street"]
+train_en = "street"
+
 
 df = pd.read_csv(dataset, usecols=cols)
 # df = pd.read_csv(train_file, usecols=cols, nrows=5)
@@ -68,19 +70,48 @@ gen_entity_pos("POI")
 # print(STREET_NAMES)
 # df.loc[df['start_street'] == 0, 'start_street'] = df["raw_address"].str.split(r"\+|=", expand=True)
 
+
+def intersect_street_POI(col):
+    mock = " " + row[col] + " "
+    start = raw_address[end:].find(mock)
+    if start == -1:
+        mock = " " + row[col] + ","
+        start = raw_address[end:].find(mock)
+        if start == -1:
+            new_start = raw_address[end:].find(row[col])
+            if new_start != -1:
+                return new_start, new_start + len(row[col])
+    return False
+
+
 ner_def = []
 for index, row in df.iterrows():
-    entities = []
-    if row["street"] and row['start_street'] != -1:
-        start = row['start_street']
-        end = row['end_street']
-        entities.append((start, end, "LOCATION"))
-    if row["street"] and row['start_street'] != -1:
-        start_poi = row['start_POI']
-        end_poi = row['end_POI']
-        entities.append((start_poi, end_poi, "POI"))
-
     raw_address = row['raw_address']
+    entities = []
+    start, end = -2, -1
+
+    # todo train STREET
+    if train_en == "street":
+        if row["street"] and row['start_street'] != -1:
+            start = row['start_street']
+            end = row['end_street']
+            entities.append((start, end, "LOCATION"))
+        if row["POI"] and row['start_POI'] != -1:
+            start_poi = row['start_POI']
+            end_poi = row['end_POI']
+            if set(range(start, end+1)).intersection(set(range(start_poi, end_poi+1))):
+                if intersect_street_POI("street"):
+                    start, end = intersect_street_POI("street")
+
+    #todo: cannot mix case
+    # jl. pasar senen dlm. iv no. 37 rt rw 007 04 kelurahan senen kecamatan senen 10410
+    # jl. pasar senen / pasar senen
+
+    else:
+        if row["POI"] and row['start_POI'] != -1:
+            start_poi = row['start_POI']
+            end_poi = row['end_POI']
+            entities.append((start_poi, end_poi, "POI"))
 
     # todo rule-based -> ? (testing)
     # if row['end_street'] < (len(raw_address)):
@@ -91,6 +122,7 @@ for index, row in df.iterrows():
     #         raw_address = raw_address[:row['start_street']] + " " + raw_address[row['start_street']:]
     #         start += 1
     #         end += 1
+
     ner = {
         "entities": entities
     }

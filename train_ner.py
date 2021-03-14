@@ -107,7 +107,7 @@ def train_spacy(data, iterations):
 
             start = time.time()  # Iteration Time
 
-            if itn % 100 == 0 and itn != 0:
+            if itn % 50 == 0:
                 print("Itn  : " + str(itn), time.time() - start_training_time)
                 print('Testing')
 
@@ -123,13 +123,14 @@ def train_spacy(data, iterations):
                     results['ents_f']) + ',' + str(results["ents_per_type"]) + "\n")
                 file2.close()
 
-                modelfile = "training_model" + str(itn)
-                nlp.to_disk(modelfile)
+                #todo check point
+                # modelfile = "training_model" + str(itn)
+                # nlp.to_disk(modelfile)
 
             # Reducing Learning rate after certain operations
-            if itn == 100:
+            if itn == 70:
                 optimizer.learn_rate = 0.0005
-            if itn == 150:
+            if itn == 85:
                 optimizer.learn_rate = 0.0001
 
             print("Statring iteration " + str(itn))
@@ -176,7 +177,7 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 150)
+prdnlp = train_spacy(TRAIN_DATA, 100)
 
 # Save our trained Model
 
