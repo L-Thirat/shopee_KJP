@@ -64,6 +64,12 @@ if "jl ..", "jalan..", "jl.", "jln " -> both POI + street
     ex jl.setu baru tvri (hj.dimun) kp.sidamukti rt03 rw06 no:85 kelurahan sukamaju
         STREET = jl. + setu baru (2words)
         POI = jl.setu baru
+        
+
+1 last comma ex danau mani ii, -> ans = danau mani ii (POI)
+zzira collection, d. i. panja, -> ans = zzira collection (POI) / d. i. panja (address)
+
+2 gg. ex gg. pa. nadi 147 kopo bojongloa kaler -> ans = gg. pa. nadi
 """
 
 """

@@ -35,10 +35,11 @@ outlog_txt = output_dir + 'outputlog.txt'
 with open(train_ner_filename, "r", encoding='utf-8') as json_file:
     TRAIN_DATA = json.load(json_file)
 
-
 # TEST_DATA =  [('what is the price of polo?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of ball?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of jegging?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of t-shirt?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of jeans?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of bat?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of shirt?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of bag?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of cup?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of jug?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of plate?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of glass?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of moniter?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of desktop?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of bottle?', {'entities': [(21, 27, 'PrdName')]}), ('what is the price of mouse?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of keyboad?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of chair?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of table?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of watch?', {'entities': [(21, 26, 'PrdName')]})]
 with open(val_ner_filename, "r", encoding='utf-8') as json_file:
     TEST_DATA = json.load(json_file)
+
+print("train-test size: ", len(TRAIN_DATA), len(TEST_DATA))
 
 random.seed(0)
 
@@ -142,11 +143,11 @@ def train_spacy(data, iterations):
             # use either batches or entire set at once
 
             ##### For training in Batches
-            batches = minibatch(TRAIN_DATA[:int(len(TRAIN_DATA)*0.6)], size=sizes)
+            batches = minibatch(TRAIN_DATA[:int(len(TRAIN_DATA)*1)], size=sizes)
             for batch in batches:
                 texts, annotations = zip(*batch)
                 # nlp.update(texts, annotations, sgd=optimizer, drop=next(dropout), losses=losses)
-                nlp.update(texts, annotations, sgd=optimizer, drop=0.5, losses=losses)
+                nlp.update(texts, annotations, sgd=optimizer, drop=0.4, losses=losses)
 
             ###########################################
 
@@ -202,13 +203,3 @@ print(json.dumps(results, indent=4))
 result_filename = output_dir + 'result.json'
 with open(result_filename, 'w') as outfile:
     json.dump(results, outfile)
-
-
-#todo
-# rule based ->
-"""
-1 last comma ex danau mani ii, -> ans = danau mani ii (POI)
-zzira collection, d. i. panja, -> ans = zzira collection (POI) / d. i. panja (address)
-
-2 gg. ex gg. pa. nadi 147 kopo bojongloa kaler -> ans = gg. pa. nadi
-"""
