@@ -108,7 +108,7 @@ def train_spacy(data, iterations):
 
             start = time.time()  # Iteration Time
 
-            if itn % 100 == 0 and itn != 0:
+            if itn % 200 == 0 and itn != 0:
                 print("Itn  : " + str(itn), time.time() - start_training_time)
                 print('Testing')
 
@@ -129,10 +129,10 @@ def train_spacy(data, iterations):
                 # nlp.to_disk(modelfile)
 
             # Reducing Learning rate after certain operations
-            if itn == 60:
-                optimizer.learn_rate = 0.0005
-            if itn == 70:
-                optimizer.learn_rate = 0.0001
+            # if itn == 60:
+            #     optimizer.learn_rate = 0.0005
+            # if itn == 70:
+            #     optimizer.learn_rate = 0.0001
 
             print("Statring iteration " + str(itn))
             random.shuffle(TRAIN_DATA)
@@ -142,10 +142,10 @@ def train_spacy(data, iterations):
 
             ##### For training in Batches
             batches = minibatch(TRAIN_DATA, size=sizes)
-            for batch in batches:
+            for batch in batches[:int(batches*0.5)]:
                 texts, annotations = zip(*batch)
                 # nlp.update(texts, annotations, sgd=optimizer, drop=next(dropout), losses=losses)
-                nlp.update(texts, annotations, sgd=optimizer, drop=0.35, losses=losses)
+                nlp.update(texts, annotations, sgd=optimizer, drop=0.5, losses=losses)
 
             ###########################################
 
@@ -178,7 +178,7 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 80)
+prdnlp = train_spacy(TRAIN_DATA, 200)
 
 # Save our trained Model
 
