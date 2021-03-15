@@ -142,7 +142,7 @@ def train_spacy(data, iterations):
 
             ##### For training in Batches
             batches = minibatch(TRAIN_DATA, size=sizes)
-            for batch in batches[:int(batches*0.5)]:
+            for batch in batches[:int(len(batches)*0.4)]:
                 texts, annotations = zip(*batch)
                 # nlp.update(texts, annotations, sgd=optimizer, drop=next(dropout), losses=losses)
                 nlp.update(texts, annotations, sgd=optimizer, drop=0.5, losses=losses)
@@ -178,7 +178,7 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 200)
+prdnlp = train_spacy(TRAIN_DATA, 100)
 
 # Save our trained Model
 
