@@ -17,6 +17,7 @@ df_train["street"] = split_data[1]
 df_train['POI_in'] = df_train.apply(lambda x: x["POI"] in x["raw_address"], axis=1)
 df_train['street_in'] = df_train.apply(lambda x: x["street"] in x["raw_address"], axis=1)
 print(df_train)
-print(df_train['POI_in'].value_counts())
-print(df_train['street_in'].value_counts())
+print(df_train['POI_in'].value_counts()) #253860/46140
+print(df_train['street_in'].value_counts()) #282613/17387
+
 df_train.to_csv("check.csv")

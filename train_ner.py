@@ -25,6 +25,7 @@ train_ner_filename = "train_ner.json"
 val_ner_filename = "val_ner.json"
 
 output_dir = "../drive/MyDrive/"
+# output_dir = "drive/MyDrive/"
 outlog_file = output_dir + 'output_log.txt'
 output_file = output_dir + 'test_output.txt'
 train_file = output_dir + 'train_output.txt'
@@ -141,8 +142,8 @@ def train_spacy(data, iterations):
             # use either batches or entire set at once
 
             ##### For training in Batches
-            batches = minibatch(TRAIN_DATA, size=sizes)
-            for batch in batches[:int(len(batches)*0.4)]:
+            batches = minibatch(TRAIN_DATA[:int(len(TRAIN_DATA)*0.6)], size=sizes)
+            for batch in batches:
                 texts, annotations = zip(*batch)
                 # nlp.update(texts, annotations, sgd=optimizer, drop=next(dropout), losses=losses)
                 nlp.update(texts, annotations, sgd=optimizer, drop=0.5, losses=losses)
@@ -198,7 +199,16 @@ results = evaluate(prdnlp, TEST_DATA)
 import json
 
 print(json.dumps(results, indent=4))
-output_dir = "../drive/MyDrive/"
 result_filename = output_dir + 'result.json'
 with open(result_filename, 'w') as outfile:
     json.dump(results, outfile)
+
+
+#todo
+# rule based ->
+"""
+1 last comma ex danau mani ii, -> ans = danau mani ii (POI)
+zzira collection, d. i. panja, -> ans = zzira collection (POI) / d. i. panja (address)
+
+2 gg. ex gg. pa. nadi 147 kopo bojongloa kaler -> ans = gg. pa. nadi
+"""
