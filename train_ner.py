@@ -53,7 +53,8 @@ file1.write("iteration_no" + "," + "ents_p" + "," + "ents_r" + "," + "ents_f" + 
 file2 = open(train_file, 'w')
 file2.write("iteration_no" + "," + "ents_p" + "," + "ents_r" + "," + "ents_f" + "," + "ents_per_type" + "\n")
 
-model = None  # ("en_core_web_sm")   # Replace with model you want to train
+model = output_dir + "Final_model__full_ent_only"
+# model = None  # ("en_core_web_sm")   # Replace with model you want to train
 start_training_time = time.time()
 
 
@@ -186,7 +187,7 @@ prdnlp = train_spacy(TRAIN_DATA, 100)
 
 # uncomment if you want to put model name through command line
 # modelfile = input("Enter your Model Name: ")
-modelfile = output_dir + "Final_model"
+modelfile = output_dir + "Final_model__full_ent_only__correct"
 prdnlp.to_disk(modelfile)
 
 # Test your text

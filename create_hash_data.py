@@ -32,6 +32,21 @@ with open("extract_data/corr_poi_street.json", "r", encoding='utf-8') as json_fi
 #     invt_corrections[corrections[item]] = item
 
 df = pd.read_csv(dataset, usecols=cols)
+corr_raw_address = []
 
-df['raw_address'] = df['raw_address'].replace(corrections, regex=True)
+for index, row in df.iterrows():
+    raw_address = row["raw_address"]
+    token = raw_address.split(" ")
+    correct = []
+    print(raw_address)
+    for t in token:
+        if t in corrections:
+            correct.append(corrections[t])
+        else:
+            correct.append(t)
+    corr_raw_address.append(" ".join(correct))
+    print(" ".join(correct))
+    sdf
+asd
+df['raw_address'] = corr_raw_address
 df.to_csv(hash_dataset, index=False)
