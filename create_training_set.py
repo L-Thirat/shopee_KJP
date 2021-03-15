@@ -11,7 +11,7 @@ val_ner_filename = "val_ner.json"
 pd.set_option('display.max_columns', 20)
 
 cols = ["raw_address", "POI/street"]
-train_en = "POI"
+train_en = "street"
 
 
 df = pd.read_csv(dataset, usecols=cols)
@@ -100,14 +100,11 @@ for index, row in df.iterrows():
     # todo train STREET
     if train_en == "street":
         if row["street"] and start != -1:
-            entities.append((start, end, "LOCATION"))
             if row["POI"] and start_poi != -1:
                 if set(range(start, end+1)).intersection(set(range(start_poi, end_poi+1))):
-                    print(start, end, start_poi, end_poi)
                     if intersect_street_POI("street"):
                         start, end = intersect_street_POI("street")
-                    else:
-                        print(raw_address)
+            entities.append((start, end, "LOCATION"))
     else:
         if row["POI"] and start_poi != -1:
             entities.append((start_poi, end_poi, "POI"))
