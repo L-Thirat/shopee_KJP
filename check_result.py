@@ -1,13 +1,15 @@
 import pandas as pd
 
-dir = "result/train_nul_entity__fulltrain/"
+dir = "result/03_train_nul_entity__full_corr/"
 result_file = dir + "submit_poi.csv"
 df = pd.read_csv(result_file)
 
 df.loc[(df["predict"] == df["output"]), 'correct'] = True
 df.loc[(df["predict"] != df["output"]), 'correct'] = False
 
-print(df["correct"].value_counts()) #14781/7824 -> 19307/3159
+print(df[df["correct"]==False])
+print(df["correct"].value_counts()) #14781/7824 -> 19307/3159 -> 16151/18319
+
 asd
 # todo colab write result
 import json

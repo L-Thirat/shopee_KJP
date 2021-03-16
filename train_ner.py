@@ -187,7 +187,7 @@ prdnlp = train_spacy(TRAIN_DATA, 100)
 
 # uncomment if you want to put model name through command line
 # modelfile = input("Enter your Model Name: ")
-modelfile = output_dir + "Final_model__full_ent_only__correct"
+modelfile = output_dir + "Final_model__full_ent_only__correct1"
 prdnlp.to_disk(modelfile)
 
 # Test your text

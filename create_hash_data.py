@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+import re
 
 dataset = "data/train.csv/train.csv"
 hash_dataset = "data/train.csv/hash_train.csv"
@@ -25,7 +26,8 @@ train_en = "POI"
 # with open("extract_data/corr_poi_street.json", 'w', encoding='utf-8') as f:
 #     json.dump(a, f)
 
-with open("extract_data/corr_poi_street.json", "r", encoding='utf-8') as json_file:
+# with open("extract_data/corr_poi_street.json", "r", encoding='utf-8') as json_file:
+with open("extract_data/poi_corection-3.json", "r", encoding='utf-8') as json_file:
     corrections = json.load(json_file)
 # invt_corrections = {}
 # for item in corrections:
@@ -36,17 +38,14 @@ corr_raw_address = []
 
 for index, row in df.iterrows():
     raw_address = row["raw_address"]
-    token = raw_address.split(" ")
+    # token = raw_address.split(" ")
+    token = re.split('; |, | ', raw_address)
     correct = []
-    print(raw_address)
     for t in token:
         if t in corrections:
             correct.append(corrections[t])
         else:
             correct.append(t)
     corr_raw_address.append(" ".join(correct))
-    print(" ".join(correct))
-    sdf
-asd
 df['raw_address'] = corr_raw_address
 df.to_csv(hash_dataset, index=False)
