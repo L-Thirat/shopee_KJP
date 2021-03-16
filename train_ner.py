@@ -104,6 +104,7 @@ def train_spacy(data, iterations):
     with nlp.disable_pipes(*other_pipes):  # only train NER
 
         warnings.filterwarnings("once", category=UserWarning, module='spacy')
+        optimizer.learn_rate = 0.0001
 
         for itn in range(iterations):
 
