@@ -53,8 +53,8 @@ file1.write("iteration_no" + "," + "ents_p" + "," + "ents_r" + "," + "ents_f" + 
 file2 = open(train_file, 'w')
 file2.write("iteration_no" + "," + "ents_p" + "," + "ents_r" + "," + "ents_f" + "," + "ents_per_type" + "\n")
 
-# model = output_dir + "Final_model__full_ent_only__correct1"
-model = None  # ("en_core_web_sm")   # Replace with model you want to train
+model = output_dir + "Final_model__full_ent_only__correct1"
+# model = None  # ("en_core_web_sm")   # Replace with model you want to train
 start_training_time = time.time()
 
 
@@ -128,7 +128,7 @@ def train_spacy(data, iterations):
                 # file2.close()
 
                 #todo check point
-                modelfile = "training_model" + str(itn)
+                modelfile = output_dir + "training_model" + str(itn)
                 nlp.to_disk(modelfile)
 
             # Reducing Learning rate after certain operations
@@ -181,7 +181,7 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 100)
+prdnlp = train_spacy(TRAIN_DATA, 150)
 
 # Save our trained Model
 

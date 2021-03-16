@@ -31,9 +31,8 @@ def myfunc(poi, street):
 
 
 df_train['label'] = df_train.apply(lambda x: myfunc(x['POI_in'], x['street_in']), axis=1)
-
 print(df_train)
 print(df_train['POI_in'].value_counts())  # 253860/46140
 print(df_train['street_in'].value_counts())  # 282613/17387
-
+sdf
 df_train.to_csv("check.csv")

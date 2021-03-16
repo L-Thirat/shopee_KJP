@@ -13,7 +13,7 @@ val_ner_filename = "val_ner.json"
 pd.set_option('display.max_columns', 20)
 
 cols = ["raw_address", "POI/street"]
-train_en = "street"
+train_en = "POI"
 
 
 # todo train
