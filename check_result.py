@@ -1,20 +1,19 @@
 import pandas as pd
 
-dir = "result/03_train_nul_entity__full_corr/"
+dir = "result/04_train_nul_entity__full_corr1/"
 result_file = dir + "submit_poi.csv"
 df = pd.read_csv(result_file)
 
 df.loc[(df["predict"] == df["output"]), 'correct'] = True
 df.loc[(df["predict"] != df["output"]), 'correct'] = False
 
-print(df[df["correct"]==False])
-print(df["correct"].value_counts()) #14781/7824 -> 19307/3159 -> 16151/18319
+print(df[df["correct"] == False])
+print(df["correct"].value_counts())  # 14781/7824 -> 19307/3159 -> 16151/18319 -> 22247/4093
 
 asd
 # todo colab write result
 import json
 import spacy
-
 
 # Settings for google Collab
 if True:
@@ -34,22 +33,21 @@ output_pred = []
 output_output = []
 
 for test_text, entities in TEST_DATA:
-  doc2 = nlp2(test_text)
-  for ent in doc2.ents:
-    predict = ent.label_
-    text = ent.text
-    print(ent)
-  asd
-  if entities['entities']:
-    output = test_text[entities['entities'][0][0]: entities['entities'][0][1]]
-  else:
-    output = ""
-  output_entity.append(predict)
-  output_pred.append(text)
-  output_output.append(output)
-
+    doc2 = nlp2(test_text)
+    for ent in doc2.ents:
+        predict = ent.label_
+        text = ent.text
+        print(ent)
+    asd
+    if entities['entities']:
+        output = test_text[entities['entities'][0][0]: entities['entities'][0][1]]
+    else:
+        output = ""
+    output_entity.append(predict)
+    output_pred.append(text)
+    output_output.append(output)
 
 df = pd.DataFrame({'entity': output_entity,
-                  'predict': output_pred,
-                  'output': output_output})
+                   'predict': output_pred,
+                   'output': output_output})
 df.to_csv("submit_poi.csv", index=False)

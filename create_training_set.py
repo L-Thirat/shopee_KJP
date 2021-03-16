@@ -181,7 +181,7 @@ for index, row in df.iterrows():
         ner_def.append((raw_address, ner))
 
 
-train_val_per = int(len(ner_def) * 0.3)
+train_val_per = int(len(ner_def) * 0.15)
 
 with open(train_ner_filename, 'w', encoding='utf-8') as f:
     TRAIN_DATA = ner_def[:-train_val_per]

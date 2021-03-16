@@ -53,7 +53,7 @@ file1.write("iteration_no" + "," + "ents_p" + "," + "ents_r" + "," + "ents_f" + 
 file2 = open(train_file, 'w')
 file2.write("iteration_no" + "," + "ents_p" + "," + "ents_r" + "," + "ents_f" + "," + "ents_per_type" + "\n")
 
-model = output_dir + "Final_model__full_ent_only"
+model = output_dir + "Final_model__full_ent_only__correct1"
 # model = None  # ("en_core_web_sm")   # Replace with model you want to train
 start_training_time = time.time()
 
@@ -104,39 +104,38 @@ def train_spacy(data, iterations):
     with nlp.disable_pipes(*other_pipes):  # only train NER
 
         warnings.filterwarnings("once", category=UserWarning, module='spacy')
-        optimizer.learn_rate = 0.0001
-
+        optimizer.learn_rate = 0.001
         for itn in range(iterations):
 
             file = open(outlog_txt, 'a')  # For logging losses of iterations
 
             start = time.time()  # Iteration Time
 
-            if itn % 200 == 0 and itn != 0:
-                print("Itn  : " + str(itn), time.time() - start_training_time)
-                print('Testing')
+            if itn % 100 == 0 and itn != 0:
+                # print("Itn  : " + str(itn), time.time() - start_training_time)
+                # print('Testing')
 
-                results = evaluate(nlp, TEST_DATA)
-                file1 = open(outlog_file, 'a')
-                file1.write(str(itn) + ',' + str(results['ents_p']) + ',' + str(results['ents_r']) + ',' + str(
-                    results['ents_f']) + ',' + str(results["ents_per_type"]) + "\n")
-                file1.close()
+                # results = evaluate(nlp, TEST_DATA)
+                # file1 = open(outlog_file, 'a')
+                # file1.write(str(itn) + ',' + str(results['ents_p']) + ',' + str(results['ents_r']) + ',' + str(
+                #     results['ents_f']) + ',' + str(results["ents_per_type"]) + "\n")
+                # file1.close()
 
-                results = evaluate(nlp, TRAIN_DATA)
-                file2 = open(train_file, 'a')
-                file2.write(str(itn) + ',' + str(results['ents_p']) + ',' + str(results['ents_r']) + ',' + str(
-                    results['ents_f']) + ',' + str(results["ents_per_type"]) + "\n")
-                file2.close()
+                # results = evaluate(nlp, TRAIN_DATA)
+                # file2 = open(train_file, 'a')
+                # file2.write(str(itn) + ',' + str(results['ents_p']) + ',' + str(results['ents_r']) + ',' + str(
+                #     results['ents_f']) + ',' + str(results["ents_per_type"]) + "\n")
+                # file2.close()
 
                 #todo check point
-                # modelfile = "training_model" + str(itn)
-                # nlp.to_disk(modelfile)
+                modelfile = "training_model" + str(itn)
+                nlp.to_disk(modelfile)
 
             # Reducing Learning rate after certain operations
-            # if itn == 60:
-            #     optimizer.learn_rate = 0.0005
-            # if itn == 70:
-            #     optimizer.learn_rate = 0.0001
+            if itn == 100:
+                optimizer.learn_rate = 0.0005
+            if itn == 150:
+                optimizer.learn_rate = 0.0001
 
             print("Statring iteration " + str(itn))
             random.shuffle(TRAIN_DATA)
@@ -149,7 +148,7 @@ def train_spacy(data, iterations):
             for batch in batches:
                 texts, annotations = zip(*batch)
                 # nlp.update(texts, annotations, sgd=optimizer, drop=next(dropout), losses=losses)
-                nlp.update(texts, annotations, sgd=optimizer, drop=0.4, losses=losses)
+                nlp.update(texts, annotations, sgd=optimizer, drop=0.3, losses=losses)
 
             ###########################################
 
@@ -182,13 +181,13 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 100)
+prdnlp = train_spacy(TRAIN_DATA, 200)
 
 # Save our trained Model
 
 # uncomment if you want to put model name through command line
 # modelfile = input("Enter your Model Name: ")
-modelfile = output_dir + "Final_model__full_ent_only__correct1"
+modelfile = output_dir + "Final_model__full_ent_only__correct2"
 prdnlp.to_disk(modelfile)
 
 # Test your text
