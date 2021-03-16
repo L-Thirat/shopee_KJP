@@ -181,7 +181,7 @@ def evaluate(ner_model, test_data):
     return scorer.scores
 
 
-prdnlp = train_spacy(TRAIN_DATA, 200)
+prdnlp = train_spacy(TRAIN_DATA, 150)
 
 # Save our trained Model
 

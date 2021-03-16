@@ -59,9 +59,10 @@ def gen_entity_pos(col_name):
     a = df[df['start_%s' % col_name] == -1][col_name].values.astype(str)
     df.loc[df['start_%s' % col_name] == -1, 'start_%s' % col_name] = find(b, a)
     print(df[(df['start_%s' % col_name] != -1) & (df['start_%s' % col_name] != -2)].shape)
-    # print(df[(df['start_%s' % col_name] == -1)])
+    # print(df[(df['start_%s' % col_name] != -1) & (df['start_%s' % col_name] != -2)])
+    # print(df[(df['start_%s' % col_name] != 0)])
     print("--------------")
-
+    # asd
     # kembangan utara b,
     df["end_%s" % col_name] = df["start_%s" % col_name] + df[col_name].str.len()
 
@@ -85,9 +86,10 @@ def re_gen_entity_pos(col_name):
     a = df[df['start_%s' % col_name] == -1][col_name].values.astype(str)
     df.loc[df['start_%s' % col_name] == -1, 'start_%s' % col_name] = find(b, a)
     print(df[(df['start_%s' % col_name] != -1) & (df['start_%s' % col_name] != -2)].shape)
-    print(df[(df['start_%s' % col_name] == -1)])
-    print("--------------")
-
+    check_hash = (df[(df['start_%s' % col_name] == -1)][["POI", "hash_raw_address"]])
+    check_hash.to_csv("check_hash.csv")
+    print("--------------") # unmatch: 32671 -> 21035
+    asd
     # kembangan utara b,
     df["end_%s" % col_name] = df["start_%s" % col_name] + df[col_name].str.len()
 
@@ -111,8 +113,8 @@ def re_gen_entity_pos(col_name):
     # df.loc[df[col_name] == "", 'end_%s' % col_name] = -2
 
 
-gen_entity_pos("street")
-re_gen_entity_pos("street")
+# gen_entity_pos("street")
+# re_gen_entity_pos("street")
 gen_entity_pos("POI")
 re_gen_entity_pos("POI")
 df["start_street"] = df["start_street"].astype(int)
