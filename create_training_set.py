@@ -13,7 +13,7 @@ val_ner_filename = "val_ner.json"
 pd.set_option('display.max_columns', 20)
 
 cols = ["raw_address", "POI/street"]
-train_en = "POI"
+train_en = "street"
 
 
 # todo train
@@ -89,7 +89,7 @@ def re_gen_entity_pos(col_name):
     check_hash = (df[(df['start_%s' % col_name] == -1)][["POI", "hash_raw_address"]])
     check_hash.to_csv("check_hash.csv")
     print("--------------") # unmatch: 32671 -> 21035
-    asd
+    # asd
     # kembangan utara b,
     df["end_%s" % col_name] = df["start_%s" % col_name] + df[col_name].str.len()
 
@@ -113,8 +113,8 @@ def re_gen_entity_pos(col_name):
     # df.loc[df[col_name] == "", 'end_%s' % col_name] = -2
 
 
-# gen_entity_pos("street")
-# re_gen_entity_pos("street")
+gen_entity_pos("street")
+re_gen_entity_pos("street")
 gen_entity_pos("POI")
 re_gen_entity_pos("POI")
 df["start_street"] = df["start_street"].astype(int)
@@ -157,12 +157,12 @@ for index, row in df.iterrows():
     # todo train STREET
     if train_en == "street":
         if row["street"] and start != -1:
-            start_poi = row['start_POI']
-            end_poi = row['end_POI']
-            if row["POI"] and start_poi != -1:
-                if set(range(start, end+1)).intersection(set(range(start_poi, end_poi+1))):
-                    if intersect_street_POI("street"):
-                        start, end = intersect_street_POI("street")
+            # start_poi = row['start_POI']
+            # end_poi = row['end_POI']
+            # if row["POI"] and start_poi != -1:
+            #     if set(range(start, end+1)).intersection(set(range(start_poi, end_poi+1))):
+            #         if intersect_street_POI("street"):
+            #             start, end = intersect_street_POI("street")
             entities.append((start, end, "LOCATION"))
     else:
         if row["POI"] and start != -1:
